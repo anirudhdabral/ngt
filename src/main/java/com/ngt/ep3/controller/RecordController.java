@@ -3,6 +3,8 @@ package com.ngt.ep3.controller;
 import com.ngt.ep3.model.Record;
 import com.ngt.ep3.service.impl.RecordServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,27 +16,32 @@ public class RecordController {
     private RecordServiceImpl service;
 
     @GetMapping("/records")
-    public List<Record> getAllRecords() {
-        return service.getAllRecords();
+    public ResponseEntity<List<Record>> getAllRecords() {
+        List<Record> allRecords = service.getAllRecords();
+        return new ResponseEntity<>(allRecords, HttpStatus.OK);
     }
 
     @GetMapping("/records/{id}")
-    public Record getRecord(@PathVariable int id) {
-        return service.getRecord(id);
+    public ResponseEntity<Record> getRecord(@PathVariable int id) {
+        Record record = service.getRecord(id);
+        return new ResponseEntity<>(record, HttpStatus.OK);
     }
 
     @PostMapping("/addRecord")
-    public Record addRecord(@RequestBody Record record) {
-        return service.addRecord(record);
+    public ResponseEntity<Record> addRecord(@RequestBody Record record) {
+        Record record1 = service.addRecord(record);
+        return new ResponseEntity<>(record1, HttpStatus.OK);
     }
 
     @PutMapping("/updateRecord")
-    public Record updateRecord(@RequestBody Record record) {
-        return service.updateRecord(record);
+    public ResponseEntity<Record> updateRecord(@RequestBody Record record) {
+        Record record1 = service.updateRecord(record);
+        return new ResponseEntity<>(record1, HttpStatus.OK);
     }
 
     @DeleteMapping("/records/{id}")
-    public void deleteRecord(@PathVariable int id) {
-        service.deleteRecord(id);
+    public ResponseEntity<Boolean> deleteRecord(@PathVariable int id) {
+        boolean deleted = service.deleteRecord(id);
+        return new ResponseEntity<>(deleted, HttpStatus.OK);
     }
 }

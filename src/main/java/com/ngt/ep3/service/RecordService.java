@@ -13,5 +13,5 @@ public interface RecordService {
 
     Record updateRecord(Record record);
 
-    void deleteRecord(int id);
+    boolean deleteRecord(int id);
 }

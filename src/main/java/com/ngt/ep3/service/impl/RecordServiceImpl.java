@@ -4,10 +4,11 @@ import com.ngt.ep3.model.Record;
 import com.ngt.ep3.repository.RecordRepository;
 import com.ngt.ep3.service.RecordService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 public class RecordServiceImpl implements RecordService {
@@ -22,7 +23,11 @@ public class RecordServiceImpl implements RecordService {
 
     @Override
     public Record getRecord(int id) {
-        return repository.findById(id).orElse(null);
+        Optional<Record> recordById = repository.findById(id);
+        if (recordById.isEmpty()) {
+            throw new RuntimeException("No records found with id: " + id);
+        }
+        return recordById.get();
     }
 
     @Override
@@ -32,17 +37,23 @@ public class RecordServiceImpl implements RecordService {
 
     @Override
     public Record updateRecord(Record record) {
-        Record existingRecord = repository
-                .findById(record.getId())
-                .orElseThrow(NoSuchElementException::new);
-        existingRecord.setFields(record.getFields());
-        existingRecord.setValues(record.getValues());
-        existingRecord.setRecordName(record.getRecordName());
-        return repository.save(existingRecord);
+        Optional<Record> existingRecord = repository.findById(record.getId());
+        if (existingRecord.isEmpty()) {
+            throw new RuntimeException("Update failed, No such record found with id: " + record.getId());
+        }
+        existingRecord.get().setFields(record.getFields());
+        existingRecord.get().setValues(record.getValues());
+        existingRecord.get().setRecordName(record.getRecordName());
+        return repository.save(existingRecord.get());
     }
 
     @Override
-    public void deleteRecord(int id) {
-        repository.deleteById(id);
+    public boolean deleteRecord(int id) {
+        try {
+            repository.deleteById(id);
+            return true;
+        } catch (EmptyResultDataAccessException e) {
+            return false;
+        }
     }
 }

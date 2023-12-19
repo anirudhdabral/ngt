@@ -7,6 +7,7 @@ import com.ngt.ep3.repository.RecordRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,6 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @SpringBootApplication
+@ComponentScan(basePackages = "com.ngt.ep3")
 @RestController
 public class NgtEp3Application {
 	@Autowired
