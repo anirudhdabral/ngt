@@ -22,7 +22,7 @@ public class RecordController {
     }
 
     @GetMapping("/records/{id}")
-    public ResponseEntity<Record> getRecord(@PathVariable int id) {
+    public ResponseEntity<Record> getRecordById(@PathVariable int id) {
         Record record = service.getRecord(id);
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
