@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping("/ngt")
 public class RecordController {
     @Autowired
     private RecordServiceImpl service;
