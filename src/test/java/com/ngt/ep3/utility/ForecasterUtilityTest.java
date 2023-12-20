@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
 
-class TotalUtilityTest {
+class ForecasterUtilityTest {
 
     @Test
     void testGetCountryTotal() {
@@ -28,7 +28,7 @@ class TotalUtilityTest {
         );
 
         // Act
-        Map<String, Map<String, Double>> result = TotalUtility.getCountryTotal(records);
+        Map<String, Map<String, Double>> result = ForecasterUtility.getRecordNameTotalByTimeframe(records);
 
         // Assert
         assertEquals(2, result.size());
@@ -50,7 +50,7 @@ class TotalUtilityTest {
         );
 
         // Act
-        Map<String, Map<String, Map<String, Double>>> result = TotalUtility.getAllByGender(records);
+        Map<String, Map<String, Map<String, Double>>> result = ForecasterUtility.getGroupedTotalByTimeframe(records);
 
         // Assert
         assertEquals(2, result.size());
@@ -72,7 +72,7 @@ class TotalUtilityTest {
         );
 
         // Act
-        Map<String, Double> result = TotalUtility.grandTotalByYear(records);
+        Map<String, Double> result = ForecasterUtility.getGrandTotalByTimeframe(records);
 
         // Assert
         assertEquals(2, result.size());

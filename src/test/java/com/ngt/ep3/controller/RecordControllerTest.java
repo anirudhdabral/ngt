@@ -137,7 +137,7 @@ class RecordControllerTest {
         when(service.postNextYearForcastedResult()).thenReturn("Next year forecast result");
 
         // Act
-        ResponseEntity<String> responseEntity = controller.postNextYearForcastedResult(record);
+        ResponseEntity<String> responseEntity = controller.postNextYearForcastedResult();
 
         // Assert
         assertEquals("Next year forecast result", responseEntity.getBody());

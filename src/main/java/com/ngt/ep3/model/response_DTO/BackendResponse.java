@@ -13,7 +13,7 @@ import java.util.Map;
 @Builder
 public class BackendResponse {
     private List<Record> recordList;
-    private Map<String, Map<String, Map<String, Double>>> genderTotalByYear;
-    private Map<String, Map<String, Double>> countryTotalByYear;
-    private Map<String, Double> grandTotalByYear;
+    private Map<String, Map<String, Map<String, Double>>> groupedTotalByTimeframe;
+    private Map<String, Map<String, Double>> recordNameTotalByTimeframe;
+    private Map<String, Double> grandTotalByTimeframe;
 }

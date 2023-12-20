@@ -4,13 +4,16 @@ import com.ngt.ep3.model.Record;
 import com.ngt.ep3.model.response_DTO.BackendResponse;
 import com.ngt.ep3.repository.RecordRepository;
 import com.ngt.ep3.service.RecordService;
-import com.ngt.ep3.utility.TotalUtility;
+import com.ngt.ep3.utility.ForecasterUtility;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import static com.ngt.ep3.constants.NgtEp3Constants.NOT_FOUND_RECORD;
+import static com.ngt.ep3.constants.NgtEp3Constants.UPDATE_FAILED;
 
 @Service
 public class RecordServiceImpl implements RecordService {
@@ -30,7 +33,7 @@ public class RecordServiceImpl implements RecordService {
     public Record getRecord(int id) {
         Optional<Record> recordById = repository.findById(id);
         if (recordById.isEmpty()) {
-            throw new RuntimeException("No records found with id: " + id);
+            throw new RuntimeException(NOT_FOUND_RECORD + id);
         }
         return recordById.get();
     }
@@ -44,7 +47,7 @@ public class RecordServiceImpl implements RecordService {
     public Record updateRecord(Record record) {
         Optional<Record> existingRecord = repository.findById(record.getId());
         if (existingRecord.isEmpty()) {
-            throw new RuntimeException("Update failed, No such record found with id: " + record.getId());
+            throw new RuntimeException(UPDATE_FAILED + record.getId());
         }
         existingRecord.get().setFields(record.getFields());
         existingRecord.get().setValues(record.getValues());
@@ -64,17 +67,17 @@ public class RecordServiceImpl implements RecordService {
 
     @Override
     public BackendResponse getForecastedResults() {
-        List<Record> all = repository.findAll();
+        List<Record> records = repository.findAll();
 
-        Map<String, Map<String, Map<String, Double>>> sumByYearAndGender = TotalUtility.getAllByGender(all);
-        Map<String, Map<String, Double>> countryTotal = TotalUtility.getCountryTotal(all);
-        Map<String, Double> grandTotalByYear = TotalUtility.grandTotalByYear(all);
+        Map<String, Map<String, Map<String, Double>>> sumTotalTimeframeAndFieldElement = ForecasterUtility.getGroupedTotalByTimeframe(records);
+        Map<String, Map<String, Double>> sumTotalRecordName = ForecasterUtility.getRecordNameTotalByTimeframe(records);
+        Map<String, Double> sumTotalTimeframe = ForecasterUtility.getGrandTotalByTimeframe(records);
 
         return BackendResponse.builder()
-                .recordList(all)
-                .genderTotalByYear(sumByYearAndGender)
-                .countryTotalByYear(countryTotal)
-                .grandTotalByYear(grandTotalByYear)
+                .recordList(records)
+                .groupedTotalByTimeframe(sumTotalTimeframeAndFieldElement)
+                .recordNameTotalByTimeframe(sumTotalRecordName)
+                .grandTotalByTimeframe(sumTotalTimeframe)
                 .build();
     }
 
@@ -82,6 +85,6 @@ public class RecordServiceImpl implements RecordService {
     public String postNextYearForcastedResult() {
         List<Record> all = repository.findAll();
 
-        return "getNextYearForcastedResult API is under construction: "+all;
+        return "postNextYearForcastedResult API is under construction: "+all;
     }
 }

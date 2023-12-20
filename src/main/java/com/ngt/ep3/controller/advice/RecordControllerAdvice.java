@@ -11,6 +11,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.ngt.ep3.constants.NgtEp3Constants.*;
+
 @RestControllerAdvice
 public class RecordControllerAdvice {
     @ExceptionHandler(Exception.class)
@@ -21,15 +23,15 @@ public class RecordControllerAdvice {
 
     private ResponseEntity<Map<String, Object>> buildErrorResponse(String message) {
         Map<String, Object> errorMap = new HashMap<>();
-        errorMap.put("message", message);
-        errorMap.put("code", HttpStatus.INTERNAL_SERVER_ERROR.value());
-        errorMap.put("timestamp", formatTimestamp(LocalDateTime.now()));
+        errorMap.put(ERROR_MESSAGE, message);
+        errorMap.put(ERROR_CODE, HttpStatus.INTERNAL_SERVER_ERROR.value());
+        errorMap.put(ERROR_TIMESTAMP, formatTimestamp(LocalDateTime.now()));
 
         return new ResponseEntity<>(errorMap, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     private String formatTimestamp(LocalDateTime timestamp) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMM yyyy , HH:mm:ss");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_FORMATTER);
         return timestamp.format(formatter);
     }
 }

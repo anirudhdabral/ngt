@@ -3,7 +3,6 @@ package com.ngt.ep3.controller;
 import com.ngt.ep3.model.Record;
 import com.ngt.ep3.model.response_DTO.BackendResponse;
 import com.ngt.ep3.service.impl.RecordServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -56,10 +55,10 @@ public class RecordController {
     }
 
     @PostMapping("/postNextYearForcastedResults")
-    public ResponseEntity<String> postNextYearForcastedResult(@RequestBody Record record) {
+    public ResponseEntity<String> postNextYearForcastedResult() {
 
         String forecastedResults = service.postNextYearForcastedResult();
-        System.out.println("getNextYearForcastedResult API is under construction.");
+        System.out.println("postNextYearForcastedResults API is under construction.");
         return new ResponseEntity<>(forecastedResults, HttpStatus.OK);
     }
 }

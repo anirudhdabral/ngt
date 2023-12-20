@@ -7,36 +7,21 @@ import com.ngt.ep3.model.embeddable.RecordValues;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class TotalUtility {
-    public static Map<String, Map<String, Double>> getCountryTotal(List<Record> data){
+import static com.ngt.ep3.constants.NgtEp3Constants.UNKNOWN_ELEMENT;
 
-        // Sum values by year for each recordName
-        Map<String, Map<String, Double>> getCountryTotal = data.stream()
-                .collect(Collectors.groupingBy(Record::getRecordName,
-                        Collectors.flatMapping(record -> record.getValues().stream(),
-                                Collectors.groupingBy(RecordValues::getElement, Collectors.summingDouble(RecordValues::getValue)))));
+public class ForecasterUtility {
+    public static Map<String, Map<String, Map<String, Double>>> getGroupedTotalByTimeframe(List<Record> all) {
 
-        // Sort the inner map by year in ascending order
-        getCountryTotal.forEach((recordName, innerMap) ->
-                getCountryTotal.put(recordName, innerMap.entrySet().stream()
-                        .sorted(Comparator.comparing(Map.Entry::getKey))
-                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new))));
-
-        return getCountryTotal;
-    }
-
-    public static Map<String, Map<String, Map<String, Double>>> getAllByGender(List<Record> all){
-
-        // Sum values by year and gender for each recordName
-        Map<String, Map<String, Map<String, Double>>> sumByYearAndGender = all.stream()
+        // Sum values by year and fields_element for each recordName
+        Map<String, Map<String, Map<String, Double>>> sumByTimeframeAndFieldElement = all.stream()
                 .collect(Collectors.groupingBy(
                         Record::getRecordName,
                         Collectors.groupingBy(
                                 record -> record.getFields().stream()
-                                        .filter(field -> "Gender".equals(field.getElement()))
+                                        .filter(field -> record.getFields().get(0).getElement().equals(field.getElement()))
                                         .findFirst()
                                         .map(RecordFields::getValue)
-                                        .orElse("Unknown"),
+                                        .orElse(UNKNOWN_ELEMENT),
                                 Collectors.flatMapping(
                                         record -> record.getValues().stream(),
                                         Collectors.groupingBy(
@@ -48,26 +33,41 @@ public class TotalUtility {
                 ));
 
         // Sort the innermost map by year in ascending order
-        sumByYearAndGender.forEach((recordName, genderMap) ->
+        sumByTimeframeAndFieldElement.forEach((recordName, genderMap) ->
                 genderMap.forEach((gender, yearMap) ->
                         genderMap.put(gender, yearMap.entrySet().stream()
                                 .sorted(Map.Entry.comparingByKey())
                                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new)))));
 
-        return sumByYearAndGender;
+        return sumByTimeframeAndFieldElement;
     }
 
-    public static Map<String, Double> grandTotalByYear(List<Record> all){
+    public static Map<String, Map<String, Double>> getRecordNameTotalByTimeframe(List<Record> data) {
+
+        // Sum values by year for each recordName
+        Map<String, Map<String, Double>> sumByRecordName = data.stream()
+                .collect(Collectors.groupingBy(Record::getRecordName,
+                        Collectors.flatMapping(record -> record.getValues().stream(),
+                                Collectors.groupingBy(RecordValues::getElement, Collectors.summingDouble(RecordValues::getValue)))));
+
+        // Sort the inner map by year in ascending order
+        sumByRecordName.forEach((recordName, innerMap) ->
+                sumByRecordName.put(recordName, innerMap.entrySet().stream()
+                        .sorted(Comparator.comparing(Map.Entry::getKey))
+                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new))));
+
+        return sumByRecordName;
+    }
+
+    public static Map<String, Double> getGrandTotalByTimeframe(List<Record> all) {
 
         // Calculate grand total yearwise for all records and sort by year
-        Map<String, Double> grandTotalByYear = all.stream()
+        return all.stream()
                 .flatMap(record -> record.getValues().stream())
                 .collect(Collectors.groupingBy(
                         RecordValues::getElement,
                         TreeMap::new,
                         Collectors.summingDouble(RecordValues::getValue)
                 ));
-
-        return grandTotalByYear;
     }
 }

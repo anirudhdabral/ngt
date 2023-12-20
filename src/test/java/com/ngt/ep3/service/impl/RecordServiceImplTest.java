@@ -3,7 +3,7 @@ package com.ngt.ep3.service.impl;
 import com.ngt.ep3.model.Record;
 import com.ngt.ep3.model.response_DTO.BackendResponse;
 import com.ngt.ep3.repository.RecordRepository;
-import com.ngt.ep3.utility.TotalUtility;
+import com.ngt.ep3.utility.ForecasterUtility;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -121,25 +121,25 @@ class RecordServiceImplTest {
         Map<String, Map<String, Double>> countryTotal = new HashMap<>();
         Map<String, Double> grandTotalByYear = new HashMap<>();
 
-        try (MockedStatic<TotalUtility> totalUtilityMock = mockStatic(TotalUtility.class)) {
-            totalUtilityMock.when(() -> TotalUtility.getAllByGender(allRecords)).thenReturn(sumByYearAndGender);
-            totalUtilityMock.when(() -> TotalUtility.getCountryTotal(allRecords)).thenReturn(countryTotal);
-            totalUtilityMock.when(() -> TotalUtility.grandTotalByYear(allRecords)).thenReturn(grandTotalByYear);
+        try (MockedStatic<ForecasterUtility> totalUtilityMock = mockStatic(ForecasterUtility.class)) {
+            totalUtilityMock.when(() -> ForecasterUtility.getGroupedTotalByTimeframe(allRecords)).thenReturn(sumByYearAndGender);
+            totalUtilityMock.when(() -> ForecasterUtility.getRecordNameTotalByTimeframe(allRecords)).thenReturn(countryTotal);
+            totalUtilityMock.when(() -> ForecasterUtility.getGrandTotalByTimeframe(allRecords)).thenReturn(grandTotalByYear);
 
             // Act
             BackendResponse result = recordService.getForecastedResults();
 
             // Assert
             assertEquals(allRecords, result.getRecordList());
-            assertEquals(sumByYearAndGender, result.getGenderTotalByYear());
-            assertEquals(countryTotal, result.getCountryTotalByYear());
-            assertEquals(grandTotalByYear, result.getGrandTotalByYear());
+            assertEquals(sumByYearAndGender, result.getGroupedTotalByTimeframe());
+            assertEquals(countryTotal, result.getRecordNameTotalByTimeframe());
+            assertEquals(grandTotalByYear, result.getGrandTotalByTimeframe());
 
-            // Verify that repository and TotalUtility methods were called
+            // Verify that repository and ForecasterUtility methods were called
             verify(repository, times(1)).findAll();
-            totalUtilityMock.verify(() -> TotalUtility.getAllByGender(allRecords));
-            totalUtilityMock.verify(() -> TotalUtility.getCountryTotal(allRecords));
-            totalUtilityMock.verify(() -> TotalUtility.grandTotalByYear(allRecords));
+            totalUtilityMock.verify(() -> ForecasterUtility.getGroupedTotalByTimeframe(allRecords));
+            totalUtilityMock.verify(() -> ForecasterUtility.getRecordNameTotalByTimeframe(allRecords));
+            totalUtilityMock.verify(() -> ForecasterUtility.getGrandTotalByTimeframe(allRecords));
         }
     }
 
@@ -154,7 +154,7 @@ class RecordServiceImplTest {
 
         // Assert
         assertNotNull(result);
-        assertTrue(result.contains("getNextYearForcastedResult API is under construction"));
+        assertTrue(result.contains("postNextYearForcastedResult API is under construction"));
         assertTrue(result.contains(allRecords.toString()));
     }
 
