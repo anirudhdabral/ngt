@@ -77,4 +77,12 @@ public class RecordServiceImpl implements RecordService {
                 .grandTotalByYear(grandTotalByYear)
                 .build();
     }
+
+    @Override
+    public String postNextYearForcastedResult() {
+        List<Record> all = repository.findAll();
+
+
+        return "getNextYearForcastedResult API is under construction.";
+    }
 }

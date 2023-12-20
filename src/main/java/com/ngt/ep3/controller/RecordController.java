@@ -46,9 +46,17 @@ public class RecordController {
         return new ResponseEntity<>(deleted, HttpStatus.OK);
     }
 
-    @GetMapping("/forcastedResults")
+    @GetMapping("/getForcastedResults")
     public ResponseEntity<BackendResponse> getForcastedResults(){
         BackendResponse forecastedResults = service.getForecastedResults();
         return new ResponseEntity<>(forecastedResults, HttpStatus.OK);
     }
+
+    @PostMapping("/postNextYearForcastedResults")
+    public ResponseEntity<String> postNextYearForcastedResult(@RequestBody Record record){
+
+        String forecastedResults = service.postNextYearForcastedResult();
+        return new ResponseEntity<>(forecastedResults, HttpStatus.OK);
+    }
+
 }

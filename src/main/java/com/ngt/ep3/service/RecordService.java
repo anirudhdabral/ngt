@@ -16,4 +16,5 @@ public interface RecordService {
 
     boolean deleteRecord(int id);
     BackendResponse getForecastedResults();
+    String postNextYearForcastedResult();
 }
