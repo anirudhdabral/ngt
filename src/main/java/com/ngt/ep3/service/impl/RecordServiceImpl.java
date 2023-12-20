@@ -1,13 +1,18 @@
 package com.ngt.ep3.service.impl;
 
 import com.ngt.ep3.model.Record;
+import com.ngt.ep3.model.response_DTO.BackendResponse;
 import com.ngt.ep3.repository.RecordRepository;
 import com.ngt.ep3.service.RecordService;
+import com.ngt.ep3.utility.CountryTotal;
+import com.ngt.ep3.utility.GenderTotal;
+import com.ngt.ep3.utility.GrandTotal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -55,5 +60,21 @@ public class RecordServiceImpl implements RecordService {
         } catch (EmptyResultDataAccessException e) {
             return false;
         }
+    }
+
+    @Override
+    public BackendResponse getForecastedResults() {
+        List<Record> all = repository.findAll();
+
+        Map<String, Map<String, Map<String, Double>>> sumByYearAndGender = GenderTotal.getAllByGender(all);
+        Map<String, Map<String, Double>> countryTotal = CountryTotal.getCountryTotal(all);
+        Map<String, Double> grandTotalByYear = GrandTotal.grandTotalByYear(all);
+
+        return BackendResponse.builder()
+                .recordList(all)
+                .genderTotalByYear(sumByYearAndGender)
+                .countryTotalByYear(countryTotal)
+                .grandTotalByYear(grandTotalByYear)
+                .build();
     }
 }
