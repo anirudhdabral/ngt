@@ -4,9 +4,7 @@ import com.ngt.ep3.model.Record;
 import com.ngt.ep3.model.response_DTO.BackendResponse;
 import com.ngt.ep3.repository.RecordRepository;
 import com.ngt.ep3.service.RecordService;
-import com.ngt.ep3.utility.CountryTotal;
-import com.ngt.ep3.utility.GenderTotal;
-import com.ngt.ep3.utility.GrandTotal;
+import com.ngt.ep3.utility.TotalUtility;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
@@ -68,9 +66,9 @@ public class RecordServiceImpl implements RecordService {
     public BackendResponse getForecastedResults() {
         List<Record> all = repository.findAll();
 
-        Map<String, Map<String, Map<String, Double>>> sumByYearAndGender = GenderTotal.getAllByGender(all);
-        Map<String, Map<String, Double>> countryTotal = CountryTotal.getCountryTotal(all);
-        Map<String, Double> grandTotalByYear = GrandTotal.grandTotalByYear(all);
+        Map<String, Map<String, Map<String, Double>>> sumByYearAndGender = TotalUtility.getAllByGender(all);
+        Map<String, Map<String, Double>> countryTotal = TotalUtility.getCountryTotal(all);
+        Map<String, Double> grandTotalByYear = TotalUtility.grandTotalByYear(all);
 
         return BackendResponse.builder()
                 .recordList(all)
@@ -84,6 +82,6 @@ public class RecordServiceImpl implements RecordService {
     public String postNextYearForcastedResult() {
         List<Record> all = repository.findAll();
 
-        return "getNextYearForcastedResult API is under construction.";
+        return "getNextYearForcastedResult API is under construction: "+all;
     }
 }
