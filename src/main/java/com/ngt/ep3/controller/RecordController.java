@@ -13,8 +13,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/ngt")
 public class RecordController {
-    @Autowired
-    private RecordServiceImpl service;
+    private final RecordServiceImpl service;
+
+    public RecordController(RecordServiceImpl service) {
+        this.service = service;
+    }
 
     @GetMapping("/records")
     public ResponseEntity<List<Record>> getAllRecords() {
@@ -47,16 +50,16 @@ public class RecordController {
     }
 
     @GetMapping("/getForcastedResults")
-    public ResponseEntity<BackendResponse> getForcastedResults(){
+    public ResponseEntity<BackendResponse> getForcastedResults() {
         BackendResponse forecastedResults = service.getForecastedResults();
         return new ResponseEntity<>(forecastedResults, HttpStatus.OK);
     }
 
     @PostMapping("/postNextYearForcastedResults")
-    public ResponseEntity<String> postNextYearForcastedResult(@RequestBody Record record){
+    public ResponseEntity<String> postNextYearForcastedResult(@RequestBody Record record) {
 
         String forecastedResults = service.postNextYearForcastedResult();
+        System.out.println("getNextYearForcastedResult API is under construction.");
         return new ResponseEntity<>(forecastedResults, HttpStatus.OK);
     }
-
 }

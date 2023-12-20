@@ -7,7 +7,6 @@ import com.ngt.ep3.service.RecordService;
 import com.ngt.ep3.utility.CountryTotal;
 import com.ngt.ep3.utility.GenderTotal;
 import com.ngt.ep3.utility.GrandTotal;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
@@ -17,9 +16,12 @@ import java.util.Optional;
 
 @Service
 public class RecordServiceImpl implements RecordService {
-    @Autowired
-    private RecordRepository repository;
 
+    private final RecordRepository repository;
+
+    public RecordServiceImpl(RecordRepository repository) {
+        this.repository = repository;
+    }
 
     @Override
     public List<Record> getAllRecords() {
@@ -81,7 +83,6 @@ public class RecordServiceImpl implements RecordService {
     @Override
     public String postNextYearForcastedResult() {
         List<Record> all = repository.findAll();
-
 
         return "getNextYearForcastedResult API is under construction.";
     }
