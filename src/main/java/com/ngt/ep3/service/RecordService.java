@@ -6,6 +6,10 @@ import com.ngt.ep3.model.response_DTO.BackendResponse;
 import java.util.List;
 
 public interface RecordService {
+
+    List<String> getAllRecordNames();
+
+    List<Record> findAllByRecordName(String recordName);
     List<Record> getAllRecords();
 
     Record getRecord(int id);

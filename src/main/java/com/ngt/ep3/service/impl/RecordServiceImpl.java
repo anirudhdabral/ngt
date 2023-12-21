@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.ngt.ep3.constants.NgtEp3Constants.NOT_FOUND_RECORD;
 import static com.ngt.ep3.constants.NgtEp3Constants.UPDATE_FAILED;
@@ -22,6 +23,16 @@ public class RecordServiceImpl implements RecordService {
 
     public RecordServiceImpl(RecordRepository repository) {
         this.repository = repository;
+    }
+
+    @Override
+    public List<String> getAllRecordNames() {
+        return repository.findAll().stream().map(item -> item.getRecordName()).distinct().collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Record> findAllByRecordName(String recordName) {
+        return repository.findAllByRecordName(recordName);
     }
 
     @Override

@@ -11,6 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/ngt")
+@CrossOrigin
 public class RecordController {
     private final RecordServiceImpl service;
 
@@ -18,11 +19,21 @@ public class RecordController {
         this.service = service;
     }
 
+    @GetMapping("/recordNames")
+    public ResponseEntity<List<String>> getAllRecordNames(){
+        return new ResponseEntity<>(service.getAllRecordNames(), HttpStatus.OK);
+    }
     @GetMapping("/records")
     public ResponseEntity<List<Record>> getAllRecords() {
         List<Record> allRecords = service.getAllRecords();
         return new ResponseEntity<>(allRecords, HttpStatus.OK);
     }
+
+    @GetMapping("/recordName/{recordName}")
+    public ResponseEntity<List<Record>> getAllByRecordName(@PathVariable String recordName) {
+        return new ResponseEntity<>(service.findAllByRecordName(recordName), HttpStatus.OK);
+    }
+
 
     @GetMapping("/records/{id}")
     public ResponseEntity<Record> getRecordById(@PathVariable int id) {
