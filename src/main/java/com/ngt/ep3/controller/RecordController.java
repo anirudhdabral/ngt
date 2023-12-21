@@ -54,11 +54,11 @@ public class RecordController {
         return new ResponseEntity<>(forecastedResults, HttpStatus.OK);
     }
 
-    @PostMapping("/postNextYearForcastedResults")
-    public ResponseEntity<String> postNextYearForcastedResult() {
+    @PostMapping("/nextYearForcastedResult")
+    public ResponseEntity<String> nextYearForcastedResult() {
 
-        String forecastedResults = service.postNextYearForcastedResult();
-        System.out.println("postNextYearForcastedResults API is under construction.");
+        String forecastedResults = service.nextYearForcastedResult();
+//        System.out.println("nextYearForcastedResult API is under construction.");
         return new ResponseEntity<>(forecastedResults, HttpStatus.OK);
     }
 }

@@ -18,5 +18,5 @@ public interface RecordService {
 
     BackendResponse getForecastedResults();
 
-    String postNextYearForcastedResult();
+    String nextYearForcastedResult();
 }

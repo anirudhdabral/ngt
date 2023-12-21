@@ -82,9 +82,10 @@ public class RecordServiceImpl implements RecordService {
     }
 
     @Override
-    public String postNextYearForcastedResult() {
+    public String nextYearForcastedResult() {
         List<Record> all = repository.findAll();
+        ForecasterUtility.distributeValues(all, "country1", "male", 2024, 24 );
 
-        return "postNextYearForcastedResult API is under construction: "+all;
+        return "nextYearForcastedResult API is under construction: ";
     }
 }
