@@ -2,6 +2,7 @@ package com.ngt.ep3.controller;
 
 import com.ngt.ep3.model.Record;
 import com.ngt.ep3.model.TimeframeTotal;
+import com.ngt.ep3.model.response_DTO.BackendResponse;
 import com.ngt.ep3.service.impl.RecordServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +41,12 @@ public class RecordController {
     public ResponseEntity<Record> getRecordById(@PathVariable int id) {
         Record record = service.getRecord(id);
         return new ResponseEntity<>(record, HttpStatus.OK);
+    }
+
+    @GetMapping("/getForecastedResults")
+    public ResponseEntity<BackendResponse> getForecastedResults() {
+        BackendResponse forecastedResults = service.getForecastedResults();
+        return new ResponseEntity<>(forecastedResults, HttpStatus.OK);
     }
 
     @PostMapping("/addRecord")

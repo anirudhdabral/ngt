@@ -2,6 +2,7 @@ package com.ngt.ep3.service;
 
 import com.ngt.ep3.model.Record;
 import com.ngt.ep3.model.TimeframeTotal;
+import com.ngt.ep3.model.response_DTO.BackendResponse;
 
 import java.util.List;
 
@@ -22,4 +23,6 @@ public interface RecordService {
     boolean deleteRecord(int id);
 
     String addTimeframeTotal(TimeframeTotal timeframeTotal, String recordName);
+
+    BackendResponse getForecastedResults();
 }

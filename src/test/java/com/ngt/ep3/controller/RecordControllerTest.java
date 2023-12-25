@@ -123,7 +123,7 @@ class RecordControllerTest {
         when(service.getForecastedResults()).thenReturn(backendResponse);
 
         // Act
-        ResponseEntity<BackendResponse> responseEntity = controller.getForcastedResults();
+        ResponseEntity<BackendResponse> responseEntity = controller.getForecastedResults();
 
         // Assert
         assertEquals(backendResponse, responseEntity.getBody());

@@ -4,8 +4,10 @@ import com.ngt.ep3.model.Record;
 import com.ngt.ep3.model.TimeframeTotal;
 import com.ngt.ep3.model.embeddable.RecordFields;
 import com.ngt.ep3.model.embeddable.RecordValues;
+import com.ngt.ep3.model.response_DTO.BackendResponse;
 import com.ngt.ep3.repository.RecordRepository;
 import com.ngt.ep3.service.RecordService;
+import com.ngt.ep3.utility.ForecasterUtility;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
@@ -121,5 +123,21 @@ public class RecordServiceImpl implements RecordService {
         }
 
         return "SUCCESS";
+    }
+
+    @Override
+    public BackendResponse getForecastedResults() {
+        List<Record> records = repository.findAll();
+
+        Map<String, Map<String, Map<String, Double>>> sumTotalTimeframeAndFieldElement = ForecasterUtility.getGroupedTotalByTimeframe(records);
+        Map<String, Map<String, Double>> sumTotalRecordName = ForecasterUtility.getRecordNameTotalByTimeframe(records);
+        Map<String, Double> sumTotalTimeframe = ForecasterUtility.getGrandTotalByTimeframe(records);
+
+        return BackendResponse.builder()
+                .recordList(records)
+                .groupedTotalByTimeframe(sumTotalTimeframeAndFieldElement)
+                .recordNameTotalByTimeframe(sumTotalRecordName)
+                .grandTotalByTimeframe(sumTotalTimeframe)
+                .build();
     }
 }
