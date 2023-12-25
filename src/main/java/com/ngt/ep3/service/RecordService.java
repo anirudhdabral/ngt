@@ -1,6 +1,7 @@
 package com.ngt.ep3.service;
 
 import com.ngt.ep3.model.Record;
+import com.ngt.ep3.model.TimeframeTotal;
 import com.ngt.ep3.model.response_DTO.BackendResponse;
 
 import java.util.List;
@@ -23,4 +24,6 @@ public interface RecordService {
     BackendResponse getForecastedResults();
 
     String nextYearForcastedResult();
+
+    String addTimeframeTotal(TimeframeTotal timeframeTotal, String recordName);
 }

@@ -1,6 +1,7 @@
 package com.ngt.ep3.controller;
 
 import com.ngt.ep3.model.Record;
+import com.ngt.ep3.model.TimeframeTotal;
 import com.ngt.ep3.model.response_DTO.BackendResponse;
 import com.ngt.ep3.service.impl.RecordServiceImpl;
 import org.springframework.http.HttpStatus;
@@ -20,9 +21,10 @@ public class RecordController {
     }
 
     @GetMapping("/recordNames")
-    public ResponseEntity<List<String>> getAllRecordNames(){
+    public ResponseEntity<List<String>> getAllRecordNames() {
         return new ResponseEntity<>(service.getAllRecordNames(), HttpStatus.OK);
     }
+
     @GetMapping("/records")
     public ResponseEntity<List<Record>> getAllRecords() {
         List<Record> allRecords = service.getAllRecords();
@@ -71,5 +73,10 @@ public class RecordController {
         String forecastedResults = service.nextYearForcastedResult();
 //        System.out.println("nextYearForcastedResult API is under construction.");
         return new ResponseEntity<>(forecastedResults, HttpStatus.OK);
+    }
+
+    @PutMapping("/addTimeframeTotal/{recordName}")
+    public ResponseEntity<String> addTimeframeTotal(@RequestBody TimeframeTotal timeframeTotal, @PathVariable String recordName) {
+        return new ResponseEntity<>(service.addTimeframeTotal(timeframeTotal, recordName), HttpStatus.OK);
     }
 }

@@ -1,6 +1,8 @@
 package com.ngt.ep3.service.impl;
 
 import com.ngt.ep3.model.Record;
+import com.ngt.ep3.model.TimeframeTotal;
+import com.ngt.ep3.model.embeddable.RecordValues;
 import com.ngt.ep3.model.response_DTO.BackendResponse;
 import com.ngt.ep3.repository.RecordRepository;
 import com.ngt.ep3.service.RecordService;
@@ -95,8 +97,56 @@ public class RecordServiceImpl implements RecordService {
     @Override
     public String nextYearForcastedResult() {
         List<Record> all = repository.findAll();
-        ForecasterUtility.distributeValues(all, "country1", "male", 2024, 24 );
+        ForecasterUtility.distributeValues(all, "country1", "male", 2024, 24);
 
         return "nextYearForcastedResult API is under construction: ";
+    }
+
+    @Override
+    public String addTimeframeTotal(TimeframeTotal timeframeTotal, String recordName) {
+        repository.findAllByRecordName(recordName)
+                .stream()
+                .flatMap(record ->
+                        record.getFields()
+                                .stream()
+                                .map(recordFields -> recordFields.getElement())
+                )
+                .distinct()
+                .peek(timeframeName -> {
+                    if (timeframeName.equals(timeframeTotal.getTimeframeName())) {
+                        // throw error or handle accordingly
+                    }
+                });
+        Map<Integer, Double> idToElementValueMap = repository.findAllByRecordName(recordName).stream()
+                .collect(Collectors.toMap(Record::getId, record ->
+                        record.getValues()
+                                .get(record.getValues().size() - 1)
+                                .getValue()
+                ));
+
+        // Total value to be distributed
+        double totalPercentage = 100.0;
+
+        // Calculate the sum of the original values
+        double sumOriginalValues = idToElementValueMap.values()
+                .stream()
+                .mapToDouble(Double::doubleValue)
+                .sum();
+
+        // Distribute the total value based on the original ratios
+        for (Map.Entry<Integer, Double> entry : idToElementValueMap.entrySet()) {
+            int id = entry.getKey();
+            double originalValue = entry.getValue();
+            double ratio = originalValue / sumOriginalValues;
+            double distributedValue = ratio * timeframeTotal.getTimeframeTotal();
+            Record tempRecord = repository.findById(id).orElse(null);
+            if (tempRecord != null) {
+                List<RecordValues> updatedRecordValuesList = tempRecord.getValues();
+                updatedRecordValuesList.add(new RecordValues(timeframeTotal.getTimeframeName(), distributedValue));
+                tempRecord.setValues(updatedRecordValuesList);
+                repository.save(tempRecord);
+            }
+        }
+        return "SUCCESS";
     }
 }
