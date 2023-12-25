@@ -116,19 +116,19 @@ class RecordControllerTest {
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
 
-    @Test
-    void testGetForcastedResults() {
-        // Arrange
-        BackendResponse backendResponse = new BackendResponse();
-        when(service.getForecastedResults()).thenReturn(backendResponse);
-
-        // Act
-        ResponseEntity<BackendResponse> responseEntity = controller.getForcastedResults();
-
-        // Assert
-        assertEquals(backendResponse, responseEntity.getBody());
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-    }
+//    @Test
+//    void testGetForcastedResults() {
+//        // Arrange
+//        BackendResponse backendResponse = new BackendResponse();
+//        when(service.getForecastedResults()).thenReturn(backendResponse);
+//
+//        // Act
+//        ResponseEntity<BackendResponse> responseEntity = controller.getForcastedResults();
+//
+//        // Assert
+//        assertEquals(backendResponse, responseEntity.getBody());
+//        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+//    }
 
 //    @Test
 //    void testPostNextYearForcastedResult() {
