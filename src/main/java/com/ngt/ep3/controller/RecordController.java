@@ -2,7 +2,6 @@ package com.ngt.ep3.controller;
 
 import com.ngt.ep3.model.Record;
 import com.ngt.ep3.model.TimeframeTotal;
-import com.ngt.ep3.model.response_DTO.BackendResponse;
 import com.ngt.ep3.service.impl.RecordServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -59,20 +58,6 @@ public class RecordController {
     public ResponseEntity<Boolean> deleteRecord(@PathVariable int id) {
         boolean deleted = service.deleteRecord(id);
         return new ResponseEntity<>(deleted, HttpStatus.OK);
-    }
-
-    @GetMapping("/getForcastedResults")
-    public ResponseEntity<BackendResponse> getForcastedResults() {
-        BackendResponse forecastedResults = service.getForecastedResults();
-        return new ResponseEntity<>(forecastedResults, HttpStatus.OK);
-    }
-
-    @PostMapping("/nextYearForcastedResult")
-    public ResponseEntity<String> nextYearForcastedResult() {
-
-        String forecastedResults = service.nextYearForcastedResult();
-//        System.out.println("nextYearForcastedResult API is under construction.");
-        return new ResponseEntity<>(forecastedResults, HttpStatus.OK);
     }
 
     @PutMapping("/addTimeframeTotal/{recordName}")

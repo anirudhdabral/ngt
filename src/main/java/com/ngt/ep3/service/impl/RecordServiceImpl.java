@@ -2,11 +2,10 @@ package com.ngt.ep3.service.impl;
 
 import com.ngt.ep3.model.Record;
 import com.ngt.ep3.model.TimeframeTotal;
+import com.ngt.ep3.model.embeddable.RecordFields;
 import com.ngt.ep3.model.embeddable.RecordValues;
-import com.ngt.ep3.model.response_DTO.BackendResponse;
 import com.ngt.ep3.repository.RecordRepository;
 import com.ngt.ep3.service.RecordService;
-import com.ngt.ep3.utility.ForecasterUtility;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +28,7 @@ public class RecordServiceImpl implements RecordService {
 
     @Override
     public List<String> getAllRecordNames() {
-        return repository.findAll().stream().map(item -> item.getRecordName()).distinct().collect(Collectors.toList());
+        return repository.findAll().stream().map(Record::getRecordName).distinct().collect(Collectors.toList());
     }
 
     @Override
@@ -79,44 +78,22 @@ public class RecordServiceImpl implements RecordService {
     }
 
     @Override
-    public BackendResponse getForecastedResults() {
-        List<Record> records = repository.findAll();
-
-        Map<String, Map<String, Map<String, Double>>> sumTotalTimeframeAndFieldElement = ForecasterUtility.getGroupedTotalByTimeframe(records);
-        Map<String, Map<String, Double>> sumTotalRecordName = ForecasterUtility.getRecordNameTotalByTimeframe(records);
-        Map<String, Double> sumTotalTimeframe = ForecasterUtility.getGrandTotalByTimeframe(records);
-
-        return BackendResponse.builder()
-                .recordList(records)
-                .groupedTotalByTimeframe(sumTotalTimeframeAndFieldElement)
-                .recordNameTotalByTimeframe(sumTotalRecordName)
-                .grandTotalByTimeframe(sumTotalTimeframe)
-                .build();
-    }
-
-    @Override
-    public String nextYearForcastedResult() {
-        List<Record> all = repository.findAll();
-        ForecasterUtility.distributeValues(all, "country1", "male", 2024, 24);
-
-        return "nextYearForcastedResult API is under construction: ";
-    }
-
-    @Override
     public String addTimeframeTotal(TimeframeTotal timeframeTotal, String recordName) {
+        //noinspection ResultOfMethodCallIgnored
         repository.findAllByRecordName(recordName)
                 .stream()
                 .flatMap(record ->
                         record.getFields()
                                 .stream()
-                                .map(recordFields -> recordFields.getElement())
+                                .map(RecordFields::getElement)
                 )
                 .distinct()
                 .peek(timeframeName -> {
                     if (timeframeName.equals(timeframeTotal.getTimeframeName())) {
-                        // throw error or handle accordingly
+                        throw new RuntimeException("Timeframe already exists: " + timeframeTotal.getTimeframeName());
                     }
                 });
+
         Map<Integer, Double> idToElementValueMap = repository.findAllByRecordName(recordName).stream()
                 .collect(Collectors.toMap(Record::getId, record ->
                         record.getValues()
@@ -124,16 +101,11 @@ public class RecordServiceImpl implements RecordService {
                                 .getValue()
                 ));
 
-        // Total value to be distributed
-        double totalPercentage = 100.0;
-
-        // Calculate the sum of the original values
         double sumOriginalValues = idToElementValueMap.values()
                 .stream()
                 .mapToDouble(Double::doubleValue)
                 .sum();
 
-        // Distribute the total value based on the original ratios
         for (Map.Entry<Integer, Double> entry : idToElementValueMap.entrySet()) {
             int id = entry.getKey();
             double originalValue = entry.getValue();
@@ -147,6 +119,7 @@ public class RecordServiceImpl implements RecordService {
                 repository.save(tempRecord);
             }
         }
+
         return "SUCCESS";
     }
 }
