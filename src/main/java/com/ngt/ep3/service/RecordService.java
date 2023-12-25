@@ -25,4 +25,5 @@ public interface RecordService {
     String addTimeframeTotal(TimeframeTotal timeframeTotal, String recordName);
 
     BackendResponse getForecastedResults();
+
 }
