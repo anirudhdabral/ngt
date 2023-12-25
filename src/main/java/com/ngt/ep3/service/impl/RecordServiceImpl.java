@@ -91,7 +91,7 @@ public class RecordServiceImpl implements RecordService {
                 )
                 .distinct()
                 .peek(timeframeName -> {
-                    if (timeframeName.equals(timeframeTotal.getTimeframeName())) {
+                    if (timeframeName.equalsIgnoreCase(timeframeTotal.getTimeframeName())) {
                         throw new RuntimeException("Timeframe already exists: " + timeframeTotal.getTimeframeName());
                     }
                 });
