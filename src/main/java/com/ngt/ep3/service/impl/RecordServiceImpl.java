@@ -85,12 +85,13 @@ public class RecordServiceImpl implements RecordService {
         repository.findAllByRecordName(recordName)
                 .stream()
                 .flatMap(record ->
-                        record.getFields()
+                        record.getValues()
                                 .stream()
-                                .map(RecordFields::getElement)
+                                .map(RecordValues::getElement)
                 )
                 .distinct()
-                .peek(timeframeName -> {
+                .forEach(timeframeName -> {
+                    System.out.println(timeframeName);
                     if (timeframeName.equals(timeframeTotal.getTimeframeName())) {
                         throw new RuntimeException("Timeframe already exists: " + timeframeTotal.getTimeframeName());
                     }
