@@ -23,6 +23,7 @@ public interface RecordService {
     boolean deleteRecord(int id);
 
     String addTimeframeTotal(TimeframeTotal timeframeTotal, String recordName);
+    String addGroupTimeframeTotal(TimeframeTotal timeframeTotal, String recordName,String groupName);
 
     BackendResponse getForecastedResults();
 

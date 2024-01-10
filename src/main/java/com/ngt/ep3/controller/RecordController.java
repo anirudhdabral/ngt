@@ -71,4 +71,8 @@ public class RecordController {
     public ResponseEntity<String> addTimeframeTotal(@RequestBody TimeframeTotal timeframeTotal, @PathVariable String recordName) {
         return new ResponseEntity<>(service.addTimeframeTotal(timeframeTotal, recordName), HttpStatus.OK);
     }
+    @PutMapping("/addGroupTimeframeTotal/{recordName}/{groupName}")
+    public ResponseEntity<String> addGroupTimeframeTotal(@RequestBody TimeframeTotal timeframeTotal, @PathVariable String recordName,@PathVariable String groupName) {
+        return new ResponseEntity<>(service.addGroupTimeframeTotal(timeframeTotal, recordName, groupName), HttpStatus.OK);
+    }
 }

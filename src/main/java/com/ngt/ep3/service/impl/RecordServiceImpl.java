@@ -127,6 +127,54 @@ public class RecordServiceImpl implements RecordService {
     }
 
     @Override
+    public String addGroupTimeframeTotal(TimeframeTotal timeframeTotal, String recordName, String groupName) {
+        repository.findAllByRecordName(recordName)
+                .stream()
+                .filter(record -> record.getFields().get(0).getValue().equalsIgnoreCase(groupName))
+                .flatMap(record ->
+                        record.getValues()
+                                .stream()
+                                .map(RecordValues::getElement)
+                )
+                .distinct()
+                .forEach(timeframeName -> {
+                    System.out.println(timeframeName);
+                    if (timeframeName.equalsIgnoreCase(timeframeTotal.getTimeframeName())) {
+                        throw new RuntimeException("Timeframe already exists: " + timeframeTotal.getTimeframeName());
+                    }
+                });
+
+        Map<Integer, Double> idToElementValueMap = repository.findAllByRecordName(recordName).stream()
+                .filter(record -> record.getFields().get(0).getValue().equalsIgnoreCase(groupName))
+                .collect(Collectors.toMap(Record::getId, record ->
+                        record.getValues()
+                                .get(record.getValues().size() - 1)
+                                .getValue()
+                ));
+
+        double sumOriginalValues = idToElementValueMap.values()
+                .stream()
+                .mapToDouble(Double::doubleValue)
+                .sum();
+
+        for (Map.Entry<Integer, Double> entry : idToElementValueMap.entrySet()) {
+            int id = entry.getKey();
+            double originalValue = entry.getValue();
+            double ratio = originalValue / sumOriginalValues;
+            double distributedValue = ratio * timeframeTotal.getTimeframeTotal();
+            Record tempRecord = repository.findById(id).orElse(null);
+            if (tempRecord != null) {
+                List<RecordValues> updatedRecordValuesList = tempRecord.getValues();
+                updatedRecordValuesList.add(new RecordValues(timeframeTotal.getTimeframeName(), distributedValue));
+                tempRecord.setValues(updatedRecordValuesList);
+                repository.save(tempRecord);
+            }
+        }
+
+        return "SUCCESS";
+    }
+
+    @Override
     public BackendResponse getForecastedResults() {
         List<Record> records = repository.findAll();
 
